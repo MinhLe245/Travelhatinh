@@ -1,0 +1,150 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% load humanize %}
+
+{% block checkout_content %}
+<div class="container py-5">
+  <div class="mb-3 text-start">
+    <a href="{% url 'buytour' %}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+  </div>
+
+  <h2 class="fw-bold text-primary mb-4">Xác nhận Đặt Tour</h2>
+
+  <form method="post" class="bg-white p-4 rounded shadow-sm">
+    {% csrf_token %}
+
+    <!-- THÔNG TIN NGƯỜI ĐẶT -->
+    <h5 class="mb-3 text-secondary">Thông tin người đặt</h5>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Họ và tên</label>
+        <input type="text" class="form-control" name="full_name" required value="{{ request.user.get_full_name }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Số điện thoại</label>
+        <input type="text" class="form-control" name="phone" required placeholder="0123456789">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" name="email" required value="{{ request.user.email }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Địa chỉ</label>
+        <input type="text" class="form-control" name="address" required placeholder="Quận/Huyện, Tỉnh/TP">
+      </div>
+    </div>
+
+    <!-- DANH SÁCH TOUR -->
+    <h5 class="mt-5 mb-3 text-secondary">Danh sách Tour đã chọn</h5>
+    <div class="row g-4">
+      {% for item in order.items.all %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-4">
+          <img src="{{ item.tour.image.url }}" class="card-img-top rounded-top-4" style="height: 180px; object-fit: cover;">
+          <div class="card-body">
+            <h5 class="fw-bold">{{ item.tour.name }}</h5>
+            <ul class="list-unstyled small text-muted">
+              <li><strong>Mã tour:</strong> {{ item.tour.code }}</li>
+              <li><strong>Khởi hành:</strong> {{ item.tour.start_date }}</li>
+              <li><strong>Điểm xuất phát:</strong> 100 Hà Huy Tập, TP Hà Tĩnh</li>
+              <li><strong>Số người:</strong> {{ item.quantity }}</li>
+              <li><strong>Giá:</strong> {{ item.total_price|vnd_format }} VNĐ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- PHƯƠNG THỨC THANH TOÁN -->
+    <h5 class="mt-5 mb-3 text-secondary">Phương thức thanh toán</h5>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-check border p-3 rounded bg-light">
+          <input class="form-check-input" type="radio" name="payment_method" value="pay_20" required id="pay_20">
+          <label class="form-check-label fw-semibold" for="pay_20">
+            💳 Thanh toán trước 20%
+          </label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-check border p-3 rounded bg-light">
+          <input class="form-check-input" type="radio" name="payment_method" value="pay_100" required id="pay_100">
+          <label class="form-check-label fw-semibold" for="pay_100">
+            ✅ Thanh toán toàn bộ 100%
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SỐ TIỀN CẦN THANH TOÁN (JS cập nhật) -->
+    <div id="amount-to-pay-box" class="mt-3 d-none">
+      <h6 class="fw-semibold">💰 Số tiền cần thanh toán:</h6>
+      <h4 class="text-danger" id="amount-to-pay"></h4>
+    </div>
+
+    <!-- GHI CHÚ -->
+ <div class="alert alert-info mt-3 rounded-4 shadow-sm">
+  <i class="fas fa-info-circle me-2"></i>
+  <strong>Lưu ý:</strong> 
+  <ul class="mb-0">
+    <li>Chúng tôi <u>chỉ hỗ trợ thanh toán online</u> thông qua chuyển khoản ngân hàng hoặc ví điện tử.</li>
+    <li>Nếu bạn chọn <strong>thanh toán trước 20%</strong>, vui lòng thanh toán online để giữ chỗ. 
+        <br>Số tiền còn lại (80%) sẽ được thanh toán trực tiếp tại văn phòng khi làm thủ tục khởi hành.</li>
+    <li>Nếu bạn chọn <strong>thanh toán 100%</strong>, bạn sẽ hoàn tất đơn hàng và không cần đến văn phòng trước chuyến đi.</li>
+  </ul>
+</div>
+
+
+    <!-- TỔNG GIÁ -->
+    <div class="mt-4">
+      <button type="submit" class="btn btn-success btn-lg mt-3 px-5 py-2">
+        <i class="fas fa-check-circle me-2"></i> Xác nhận đặt tour
+      </button>
+    </div>
+
+    <!-- HIỆN QR SAU KHI ĐẶT -->
+    {% if show_qr %}
+    <hr class="my-5">
+    <div class="text-center">
+      <h5 class="text-success fw-bold mb-3">
+        Vui lòng quét mã QR để thanh toán
+        {% if payment_method == 'pay_20' %}20%{% else %}100%{% endif %}
+      </h5>
+      <p class="fs-5 mb-1">Số tiền cần thanh toán:</p>
+      <h4 class="text-danger">{{ amount_to_pay|floatformat:0|intcomma }} VNĐ</h4>
+      <img src="{% static 'app/images/qrcode.png' %}" alt="QR thanh toán" class="img-fluid my-3" style="max-width: 250px;">
+      <p class="text-muted small">Sau khi thanh toán, đơn hàng sẽ được xử lý.</p>
+    </div>
+    {% endif %}
+  </form>
+</div>
+
+<!-- SCRIPT: Hiện số tiền cần thanh toán -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const total = {{ order.items.all|sum_total_price }};
+    const pay20 = document.getElementById("pay_20");
+    const pay100 = document.getElementById("pay_100");
+    const box = document.getElementById("amount-to-pay-box");
+    const text = document.getElementById("amount-to-pay");
+
+    function formatCurrency(number) {
+      return new Intl.NumberFormat('vi-VN').format(number) + " VNĐ";
+    }
+
+    function updateAmount(percent) {
+      text.textContent = formatCurrency(Math.round(total * percent));
+      box.classList.remove("d-none");
+    }
+
+    if (pay20 && pay100) {
+      pay20.addEventListener("change", () => updateAmount(0.2));
+      pay100.addEventListener("change", () => updateAmount(1));
+    }
+  });
+</script>
+{% endblock checkout_content %}

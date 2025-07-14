@@ -1,0 +1,104 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block lognup_content %}
+<style>
+  body {
+    background: linear-gradient(to right, #74ebd5, #acb6e5);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .signup-container {
+    max-width: 1000px;
+    margin: 60px auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    overflow: hidden;
+  }
+
+  .signup-image {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .signup-image img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+  }
+
+  .signup-form {
+    flex: 1;
+    padding: 50px 40px;
+  }
+
+  .signup-form h2 {
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .form-control {
+    border-radius: 10px;
+  }
+
+  .btn-primary {
+    border-radius: 10px;
+  }
+
+  .text-danger {
+    font-size: 0.875rem;
+  }
+
+  .text-link {
+    text-align: center;
+    margin-top: 10px;
+  }
+</style>
+
+<div class="signup-container">
+  <!-- Image section -->
+  <div class="signup-image">
+    <img src="{% static 'app/images/bg.jpg' %}" alt="Sign up illustration">
+  </div>
+
+  <!-- Form section -->
+  <div class="signup-form">
+    <h2>Đăng ký tài khoản</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-3">
+          {{ field.label_tag }} {{ field|add_class:"form-control" }}
+          {% if field.errors %}
+            <div class="text-danger">{{ field.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+    </form>
+
+    <div class="text-link">
+      <p>Bạn đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

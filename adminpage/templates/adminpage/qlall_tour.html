@@ -1,0 +1,224 @@
+{% extends "adminpage/base.html" %}
+{% load static %}
+
+{% block test_sontent %}
+<div class="container mt-4">
+  <div class="mb-3 text-start">
+    <a href="{% url 'hometour' %}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+  </div>
+  <!-- THÔNG BÁO -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- phần còn lại -->
+
+  <!-- PHẦN 1: Tour quá hạn -->
+  <div class="card mb-5 border-danger">
+    <div class="card-header bg-danger text-white">
+      ⏰ Các Tour quá hạn (chưa có lượt đặt)
+    </div>
+    <div class="card-body">
+      <table class="table table-sm table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Mã Tour</th>
+            <th>Tên Tour</th>
+            <th>Ngày bắt đầu</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tour in tours_qua_han %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ tour.code }}</td>
+            <td>{{ tour.name }}</td>
+            <td>{{ tour.start_date|date:"d/m/Y" }}</td>
+            <td>
+              <button class="btn btn-warning btn-sm btn-sua-tour" data-bs-toggle="modal" data-bs-target="#tourModal" data-id="{{ tour.id }}">
+                <i class="bi bi-pencil"></i> Sửa
+              </button>
+              <form action="{% url 'xoa_tour' tour.id %}" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xoá tour này không?');">
+                {% csrf_token %}
+                <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          <script type="application/json" id="tourData-{{ tour.id }}">
+            {
+              "id": "{{ tour.id }}",
+              "name": "{{ tour.name|escapejs }}",
+              "code": "{{ tour.code|escapejs }}",
+              "price": "{{ tour.price }}",
+              "duration_days": "{{ tour.duration_days }}",
+              "start_date": "{{ tour.start_date|date:'Y-m-d' }}",
+              "describe": "{{ tour.describe|escapejs }}"
+            }
+          </script>
+          {% empty %}
+          <tr><td colspan="5" class="text-center text-muted">Không có tour quá hạn nào.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PHẦN 2: Tất cả Tour -->
+  <div class="card">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <span>📋 Danh sách tất cả Tour</span>
+      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tourModal" onclick="openAddTourModal()">
+        <i class="bi bi-plus-circle"></i> Thêm Tour mới
+      </button>
+    </div>
+    <div class="card-body">
+      <p class="text-info fw-bold">
+        <i class="bi bi-card-checklist"></i> Tổng số tour đã tạo: {{ tours|length }}
+      </p>
+
+      <div id="alertBox" class="alert alert-success alert-dismissible fade show d-none" role="alert">
+        ✅ <span id="alertMessage"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Mã Tour</th>
+            <th>Ảnh</th>
+            <th>Tên Tour</th>
+            <th>Giá</th>
+            <th>Thời gian</th>
+            <th>Ngày bắt đầu</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tour in tours %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ tour.code }}</td>
+            <td><img src="{{ tour.image.url }}" width="70"></td>
+            <td><strong>{{ tour.name }}</strong></td>
+            <td>{{ tour.price|floatformat:0 }}₫</td>
+            <td>{{ tour.duration_days }} ngày</td>
+            <td>{{ tour.start_date|date:"d/m/Y" }}</td>
+            <td>
+              <button class="btn btn-warning btn-sm btn-sua-tour" data-bs-toggle="modal" data-bs-target="#tourModal" data-id="{{ tour.id }}">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <form action="{% url 'xoa_tour' tour.id %}" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xoá tour này không?');">
+                {% csrf_token %}
+                <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          <script type="application/json" id="tourData-{{ tour.id }}">
+            {
+              "id": "{{ tour.id }}",
+              "name": "{{ tour.name|escapejs }}",
+              "code": "{{ tour.code|escapejs }}",
+              "price": "{{ tour.price }}",
+              "duration_days": "{{ tour.duration_days }}",
+              "start_date": "{{ tour.start_date|date:'Y-m-d' }}",
+              "describe": "{{ tour.describe|escapejs }}"
+            }
+          </script>
+          {% empty %}
+          <tr><td colspan="8" class="text-center">Không có Tour nào.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TOUR -->
+<div class="modal fade" id="tourModal" tabindex="-1" aria-labelledby="tourModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form id="tourForm" method="POST" enctype="multipart/form-data" action="{% url 'qlall_tour' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="tourModalLabel">Thông tin Tour</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+
+          <!-- 🔄 Hidden input dùng để sửa -->
+          <input type="hidden" name="tour_id">
+
+          <div class="mb-3">
+            <label>Tên Tour</label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Mã Tour</label>
+            <input type="text" name="code" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Giá Tour</label>
+            <input type="number" name="price" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Thời gian (ngày)</label>
+            <input type="number" name="duration_days" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Ngày bắt đầu</label>
+            <input type="date" name="start_date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Mô tả</label>
+            <textarea name="describe" class="form-control" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label>Ảnh đại diện (có thể để trống khi sửa)</label>
+            <input type="file" name="image" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">💾 Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- SCRIPT JS -->
+<script>
+  function openAddTourModal() {
+    const form = document.getElementById('tourForm');
+    form.reset();
+    form.querySelector('input[name="tour_id"]').value = ''; // Trống ID để thêm mới
+  }
+
+  document.querySelectorAll('.btn-sua-tour').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      const data = JSON.parse(document.getElementById(`tourData-${id}`).textContent);
+
+      const form = document.getElementById('tourForm');
+      form.querySelector('input[name="tour_id"]').value = data.id;
+      form.querySelector('input[name="name"]').value = data.name;
+      form.querySelector('input[name="code"]').value = data.code;
+      form.querySelector('input[name="price"]').value = data.price;
+      form.querySelector('input[name="duration_days"]').value = data.duration_days;
+      form.querySelector('input[name="start_date"]').value = data.start_date;
+      form.querySelector('textarea[name="describe"]').value = data.describe;
+    });
+  });
+</script>
+
+{% endblock %}

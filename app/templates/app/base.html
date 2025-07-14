@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Travel Hà Tĩnh </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link href="{% static 'app/css/main.css'%}" rel="stylesheet">
+         <link rel="icon" type="image/png" href="{% static 'app/images/logo.png' %}">
+         <!-- Bootstrap JS Bundle (bao gồm Popper) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Thêm trong <head> -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <!-- Bootstrap Bundle JS (gồm cả Popper) -->
+      <script>
+  const addToCartUrl = "{% url 'add_to_cart_ajax' %}";
+</script>
+<script src="{% static 'app/js/add_to_cart.js' %}"></script>
+<meta name="csrf-token" content="{{ csrf_token }}">
+
+
+    </head>
+    <body>
+      {% if user.is_authenticated and user.groups.all.0.name == 'AdminTravel' %}
+<script>
+    // Nếu là admin travel thì chuyển đến giao diện admin luôn
+    if (window.location.pathname === "/") {
+        window.location.href = "{% url 'admin_dashboard' %}";
+    }
+</script>
+{% endif %}
+
+ <!-- Header -->
+<nav class="navbar navbar-expand-lg navbar-custom py-2 shadow-sm">
+  <div class="container">
+    <!-- Logo nhỏ lại -->
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'home'%}">
+      <img src="{% static 'app/images/logo.png' %}" alt="Logo" style="height: 40px;">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
+      <ul class="navbar-nav mb-2 mb-lg-0 gap-2">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home'%}">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Khám phá</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{%url 'place'%}">Địa danh</a></li>
+            <li><a class="dropdown-item" href="{%url 'food'%}">Ẩm thực</a></li>
+            <li><a class="dropdown-item" href="{%url 'culture'%}">Văn hóa</a></li>
+          </ul>
+        </li>
+         <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Tour</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{%url 'tour'%}">Đặt Tour</a></li>
+            <li><a class="dropdown-item" href="{%url 'buytour'%}">Giỏ Tour</a></li>
+          </ul>
+        </li>
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" href="{%url 'your_tours'%}">Tour của bạn</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{%url 'lien_he'%}">Liên hệ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Đánh giá</a>
+        </li>
+      </ul>
+    </div>
+
+<div class="d-flex align-items-center gap-3">
+  {% if user.is_authenticated %}
+    <span class="fw-bold text-success">👋 Xin chào, {{ user.username }}</span>
+
+    <form method="post" action="{% url 'logout' %}" class="mb-0">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline-danger btn-sm">
+        <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
+      </button>
+    </form>
+
+  {% else %}
+    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">
+      <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+    </a>
+    <a href="{% url 'signup' %}" class="btn btn-outline-success btn-sm">
+      <i class="fas fa-user-plus me-1"></i> Đăng ký
+    </a>
+  {% endif %}
+</div>
+
+
+</nav>
+
+<!--Login-->
+{% block login_content %}{% endblock login_content%}
+<!--lognup-->
+{% block lognup_content %}{% endblock lognup_content %}
+<!--home-->
+ {% block home_content %}{% endblock home_content%}
+
+<!--Tour-->
+{% block tour_content %}{% endblock tour_content %}
+<!--Buy Tour-->
+{% block buytour_content %} {% endblock buytour_content%}
+<!--Checkout-->
+{% block checkout_content %}{% endblock checkout_content%}
+<!--Payment-->
+{% block payment_content %}{% endblock payment_content%}
+<!--EmailPay-->
+{% block email_content %}{% endblock email_content%}
+<!--Contact-->
+{% block contact_content %}{% endblock contact_content %}
+<!--Your Tour-->
+{% block yourtour_content %}{% endblock yourtour_content%}
+  <!-- Footer -->
+ <footer class="custom-footer text-white py-5 mt-0">
+  <div class="container">
+    <div class="row text-start">
+      <!-- Giới thiệu -->
+      <div class="col-md-4 mb-3">
+        <h5>Giới thiệu</h5>
+        <p>Du lịch Hà Tĩnh là nền tảng cung cấp thông tin du lịch, tour và khám phá những vẻ đẹp của quê hương Hà Tĩnh.</p>
+      </div>
+
+      <!-- Các chức năng -->
+      <div class="col-md-4 mb-3">
+        <h5>Chức năng</h5>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'home'%}">Home</a></li>
+          <li><a href="{%url 'place'%}">Địa danh</a></li>
+          <li><a href="{%url 'food'%}">Ẩm thực</a></li>
+          <li><a href="{%url 'culture'%}">Văn hóa</a></li>
+          <li><a href="{%url 'tour'%}">Tour</a></li>
+        </ul>
+      </div>
+
+      <!-- Liên hệ -->
+      <div class="col-md-4 mb-3">
+        <h5>Liên hệ với chúng tôi</h5>
+        <p>
+  <i class="fas fa-envelope me-2"></i>
+ <a href="mailto:dulichhatinh@gmail.com">dulichhatinh@gmail.com</a>
+</p>
+<p>
+  <i class="fab fa-facebook me-2"></i>
+   <a href="https://facebook.com/dulichhatinh" target="_blank">fb.com/dulichhatinh</a>
+</p>
+      </div>
+    </div>
+
+
+     
+      <script src="{% static 'app/js/add_to_cart.js' %}"></script>
+
+    <div class="text-center pt-4 border-top mt-4 small text-muted">
+      © 2025 Du lịch Hà Tĩnh. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+
+
+       
+    </body>
+</html>

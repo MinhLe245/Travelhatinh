@@ -1,0 +1,85 @@
+{% extends "adminpage/base.html" %}
+
+{% block test_sontent %}
+<div class="container mt-4">
+    <h2 class="mb-4">🏠 Trang tổng quan</h2>
+
+    <div class="alert alert-success">
+        Xin chào <strong>{{ user.username }}</strong>, chào mừng bạn đến hệ thống quản trị <b>Du lịch Hà Tĩnh</b>!
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">📦 Tổng số Tour</h6>
+                    <p class="fs-4 text-primary">{{ tour_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">📍 Địa danh</h6>
+                    <p class="fs-4 text-success">{{ place_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">🍽️ Ẩm thực</h6>
+                    <p class="fs-4 text-warning">{{ food_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">🎭 Văn hóa</h6>
+                    <p class="fs-4 text-info">{{ culture_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">📞 Liên hệ</h6>
+                    <p class="fs-4 text-danger">{{ contact_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">🌟 Đánh giá</h6>
+                    <p class="fs-4 text-secondary">{{ review_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">📊 Đơn đã thanh toán</h6>
+                    <p class="fs-4 text-success">{{ paid_orders }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">⚙️ Người dùng (quản trị)</h6>
+                    <p class="fs-4 text-dark">{{ admin_user_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

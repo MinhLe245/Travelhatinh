@@ -1,0 +1,129 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block tour_content %}
+
+<!-- Banner -->
+<section class="banner-section text-white d-flex align-items-center justify-content-center" style="
+  background-image: url('{% static 'app/images/dulich.jpg' %}');
+  height: 350px;
+  background-size: cover;
+  background-position: center;
+  position: relative;">
+  <div style="position:absolute; inset:0; background:rgba(0,0,0,0.5)"></div>
+  <div class="position-relative text-center">
+    <h1 class="display-4 fw-bold">Các Tour Du Lịch Và Trải Nghiệm Tại Hà Tĩnh</h1>
+    <p class="lead">Khám phá, trải nghiệm và tận hưởng!</p>
+  </div>
+</section>
+
+<!-- Bộ lọc ngày -->
+<section class="container my-4 py-4 px-4 rounded-5 shadow-lg" style="background: linear-gradient(135deg, #f0f4f8, #dbeafe); border-radius: 25px;">
+  <form id="search-form" method="GET" class="row g-3 align-items-end justify-content-center">
+    <div class="col-md-3">
+      <label class="form-label">Số ngày tour</label>
+      <input type="number" name="duration" class="form-control rounded-pill px-3" placeholder="nhập số ngày đi tour..." min="1">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Tháng</label>
+      <input type="number" name="month" class="form-control rounded-pill px-3" placeholder="nhập tháng..." min="1" max="12">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Năm</label>
+      <input type="number" name="year" class="form-control rounded-pill px-3" placeholder="nhập năm....">
+    </div>
+    <div class="col-12 text-center mt-3">
+      <button type="submit" class="btn btn-primary px-5 rounded-pill">
+        <i class="fas fa-search me-1"></i> Tìm Tour
+      </button>
+    </div>
+  </form>
+</section>
+
+<!-- Ghi chú -->
+<p class="text-center text-danger fw-semibold fst-italic mb-5" style="max-width: 800px; margin: 0 auto;">
+  <strong>Note:</strong> Trẻ em dưới 5 tuổi được miễn phí. Tour bắt đầu đúng 7h45p tại <strong>100 Hà Huy Tập, TP Hà Tĩnh</strong>.<br>
+  <span class="text-muted small">(Giá tour chưa bao gồm chi phí di chuyển đến trụ sở. Hotline: 0971297501)</span>
+</p>
+
+<!-- Danh sách Tour -->
+<section class="container mb-5">
+  {% if searched and tours %}
+    <div class="text-center mb-4">
+      <h4 class="text-primary fw-bold">🔍 Những Tour theo dữ liệu tìm kiếm của bạn:</h4>
+    </div>
+  {% endif %}
+
+ <div class="bg-white rounded-4 p-4 shadow-sm border">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <button class="btn btn-outline-secondary" onclick="history.back()">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </button>
+
+    <a href="{% url 'buytour' %}" class="btn btn-outline-primary rounded-pill px-4">
+      Mua Ngay
+    </a>
+  </div>
+
+    <h4 class="text-primary fw-bold">Danh sách tất cả các Tour</h4>
+    
+    <!-- Khu vực kết quả tour -->
+    <div id="tour-list-wrapper">
+      {% include 'app/tour_list.html' %}
+    </div>
+  </div>
+</section>
+
+<!-- Style -->
+<style>
+.tour-card:hover {
+  transform: translateY(-5px);
+  transition: 0.3s ease;
+  box-shadow: 0 0 18px rgba(0,0,0,0.15);
+}
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+</style>
+
+<!-- AJAX Tìm kiếm + Phân trang -->
+<script>
+document.getElementById("search-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
+  fetch("{% url 'tour_search_ajax' %}", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": "{{ csrf_token }}",
+    },
+    body: formData
+  })
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById("tour-list-wrapper").innerHTML = html;
+    window.scrollTo({ top: document.getElementById("tour-list-wrapper").offsetTop - 60, behavior: 'smooth' });
+  });
+});
+
+// Bắt sự kiện click phân trang
+document.addEventListener('click', function(e) {
+  if (e.target.matches('.ajax-page-link')) {
+    e.preventDefault();
+    const url = e.target.getAttribute('href');
+    fetch(url, {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("tour-list-wrapper").innerHTML = html;
+      window.scrollTo({ top: document.getElementById("tour-list-wrapper").offsetTop - 60, behavior: 'smooth' });
+    });
+  }
+});
+</script>
+
+{% endblock %}

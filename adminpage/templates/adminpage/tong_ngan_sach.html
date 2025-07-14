@@ -1,0 +1,74 @@
+{% extends "adminpage/base.html" %}
+{% load humanize %}
+{% block test_sontent %}
+
+<div class="container mt-4">
+  <div class="card shadow border rounded-4 p-4">
+  <div class="mb-3 text-start">
+    <a href="{% url 'hometour' %}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+  </div>
+    <h2 class="text-success mb-4 text-center">
+      💰 Tổng Ngân Sách Hệ Thống
+    </h2>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card border-primary shadow-sm rounded-3">
+          <div class="card-body text-center">
+            <h6 class="text-muted">🧾 Tổng đơn đã đặt</h6>
+            <h4 class="text-primary fw-bold">{{ tong_don }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card border-info shadow-sm rounded-3">
+          <div class="card-body text-center">
+            <h6 class="text-muted">💵 Tổng tiền đơn hàng</h6>
+            <h4 class="text-info fw-bold">{{ tong_tien|intcomma }}₫</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card border-success shadow-sm rounded-3">
+          <div class="card-body text-center">
+            <h6 class="text-muted">✅ Đã thu từ khách</h6>
+            <h4 class="text-success fw-bold">{{ tong_thu_duoc|intcomma }}₫</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card border-warning shadow-sm rounded-3">
+          <div class="card-body text-center">
+            <h6 class="text-muted">🕐 Khách còn nợ</h6>
+            <h4 class="text-warning fw-bold">{{ tong_con_no|intcomma }}₫</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card border-danger shadow-sm rounded-3">
+          <div class="card-body text-center">
+            <h6 class="text-muted">❌ Tiền bị hủy</h6>
+            <h4 class="text-danger fw-bold">{{ tong_huy|intcomma }}₫</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="card bg-dark text-white shadow rounded-4 mt-3">
+          <div class="card-body text-center py-4">
+            <h5 class="fw-bold">📊 Tổng ngân sách thực thu</h5>
+            <h2 class="text-warning mt-2 fw-bold">{{ tong_ngan_sach|intcomma }}₫</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

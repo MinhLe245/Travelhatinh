@@ -1,0 +1,53 @@
+<!-- templates/adminpage/contact_detail_ajax.html -->
+<div>
+  <h5 class="text-info">📨 {{ contact.subject }}</h5>
+  <p><strong>👤 {{ contact.name }}</strong></p>
+  <p><strong>📧 Email:</strong> {{ contact.email }}</p>
+  <p><strong>📱 Số điện thoại:</strong> {{ contact.phone }}</p>
+  <p><strong>💬 Nội dung:</strong><br>{{ contact.message|linebreaks }}</p>
+
+  {% if contact.image %}
+    <p><strong>🖼 Ảnh minh họa:</strong></p>
+    <img src="{{ contact.image.url }}" class="rounded" style="max-width: 200px;">
+  {% endif %}
+
+  <p><strong>⏱ Gửi lúc:</strong> {{ contact.created_at|date:"d/m/Y H:i" }}</p>
+
+  {% if contact.is_replied %}
+    <div class="alert alert-success mt-3">
+      <strong>✅ Đã phản hồi:</strong><br>
+      {{ contact.reply|linebreaks }}
+    </div>
+  {% else %}
+    <form method="POST" onsubmit="return sendReply(event, {{ contact.id }});">
+      {% csrf_token %}
+      <label class="form-label mt-3">✍️ Phản hồi:</label>
+      <textarea name="reply" class="form-control mb-2" rows="3"></textarea>
+      <button type="submit" class="btn btn-primary btn-sm">📤 Gửi phản hồi</button>
+    </form>
+  {% endif %}
+
+  <form method="POST" action="{% url 'xoa_contact' contact.id %}" class="mt-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xoá liên hệ này?')">🗑 Xoá liên hệ</button>
+  </form>
+</div>
+
+<script>
+function sendReply(e, contactId) {
+  e.preventDefault();
+  const form = e.target;
+  const data = new FormData(form);
+  fetch(`/adminpage/phan-hoi/${contactId}/`, {
+    method: "POST",
+    body: data,
+    headers: {
+      'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+    }
+  })
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById("contact-detail-area").innerHTML = html;
+  });
+}
+</script>

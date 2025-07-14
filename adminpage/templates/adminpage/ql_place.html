@@ -1,0 +1,73 @@
+{% extends "adminpage/base.html" %}
+{% load static %}
+{% block test_sontent%}
+<div class="container mt-4">
+  <h2>📍 Quản lý Địa danh</h2>
+
+  <!-- THÔNG BÁO -->
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="alert alert-success">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- FORM THÊM / SỬA -->
+  <form method="POST" enctype="multipart/form-data" class="mb-4 p-3 border rounded shadow-sm bg-light">
+    <h3>Thêm Địa danh mới</h3>
+    {% csrf_token %}
+    {% if form.instance.id %}
+      <input type="hidden" name="edit_id" value="{{ form.instance.id }}">
+    {% endif %}
+    <div class="row">
+      <div class="col-md-6">
+        {{ form.name.label_tag }} {{ form.name }}
+      </div>
+      <div class="col-md-6">
+        {{ form.location.label_tag }} {{ form.location }}
+      </div>
+    </div>
+    <div class="mt-2">
+      {{ form.describe.label_tag }} {{ form.describe }}
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-6">
+        {{ form.image.label_tag }} {{ form.image }}
+      </div>
+      <div class="col-md-6">
+        {{ form.rating.label_tag }} {{ form.rating }}
+      </div>
+    </div>
+    <div class="mt-3">
+      <button type="submit" class="btn btn-success">
+        {% if form.instance.id %}Cập nhật địa danh{% else %}Thêm địa danh{% endif %}
+      </button>
+    </div>
+  </form>
+
+  <hr>
+  <h5>📸 Danh sách địa danh đã đăng</h5>
+
+  <!-- DANH SÁCH HIỂN THỊ -->
+  <div class="row">
+    {% for place in places %}
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow">
+          <img src="{{ place.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+          <div class="card-body">
+            <h5 class="card-title">{{ place.name }}</h5>
+            <p class="card-text">{{ place.describe|truncatewords:25 }}</p>
+            <p>📍 Địa điểm: {{ place.location }}</p>
+            <p>⭐ Đánh giá: {{ place.rating }}/5</p>
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'delete_place' place.id %}" class="btn btn-danger btn-sm"
+                 onclick="return confirm('Bạn có chắc chắn muốn xoá địa danh này?');">🗑️ Xóa</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">Chưa có địa danh nào được đăng.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

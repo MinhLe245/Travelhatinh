@@ -1,0 +1,72 @@
+{% extends "adminpage/base.html" %}
+{% load humanize %}
+
+{% block test_sontent %}
+<div class="container mt-4">
+  <div class="mb-3 text-start">
+    <a href="{% url 'hometour' %}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+  </div>
+
+  <h2 class="mb-4 text-primary"><i class="fas fa-receipt"></i> Danh sách đơn thanh toán</h2>
+  <p><strong>Tổng số đơn:</strong> <span class="text-primary fw-bold">{{ total_orders }}</span></p>
+
+  <div class="table-responsive shadow-sm rounded">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-dark text-center">
+        <tr>
+          <th>#</th>
+          <th>👤 Khách hàng</th>
+          <th>🧳 Tour đã đặt</th>
+          <th>📅 Ngày đặt</th>
+          <th>💸 Tỷ lệ thanh toán</th>
+          <th class="text-success">✅ Đã trả</th>
+          <th class="text-danger">❗ Còn lại</th>
+          <th>📦 Phương thức</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr class="text-center">
+          <td class="fw-bold">#{{ order.id }}</td>
+          <td>{{ order.username }}</td>
+          <td class="text-start">
+            <ul class="list-unstyled mb-0">
+              {% for item in order.tour_items %}
+                <li><i class="fas fa-location-dot text-success"></i> {{ item.tour_name }} <span class="badge bg-info text-dark">{{ item.quantity }} người</span></li>
+              {% empty %}
+                <li class="text-muted">Không có tour</li>
+              {% endfor %}
+            </ul>
+          </td>
+          <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+          <td>
+            {% if order.payment_percent == 20 %}
+              <span class="badge bg-warning text-dark"><i class="fas fa-hourglass-half"></i> 20%</span>
+            {% else %}
+              <span class="badge bg-success"><i class="fas fa-check-circle"></i> 100%</span>
+            {% endif %}
+          </td>
+          <td class="text-success fw-bold">{{ order.paid|floatformat:0|intcomma }} đ</td>
+          <td class="text-danger fw-bold">{{ order.remain|floatformat:0|intcomma }} đ</td>
+          <td>
+            {% if order.payment_method == "pay_20" %}
+              <span class="badge bg-warning text-dark">Trả trước</span>
+            {% elif order.payment_method == "online" %}
+              <span class="badge bg-primary">Online</span>
+            {% else %}
+              <span class="badge bg-secondary">Tiền mặt</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="text-center text-muted">Không có đơn nào được thanh toán.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

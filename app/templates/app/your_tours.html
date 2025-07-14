@@ -1,0 +1,98 @@
+{% extends 'app/base.html' %}
+{% load custom_filters %}
+{% load humanize %}
+
+{% block yourtour_content %}
+<div class="container py-5">
+<div class="container py-5">
+  <div class="mb-3 text-start">
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+  </div>
+  <h2 class="fw-bold mb-4 text-primary">🧳 Tour của bạn</h2>
+
+  <!-- 🔔 THÔNG BÁO -->
+  <div class="alert alert-info rounded-4 shadow-sm">
+    <i class="fas fa-info-circle me-2"></i>
+    <strong>Lưu ý:</strong> Bạn cần đến <strong>trụ sở số 100, Hà Huy Tập, TP Hà Tĩnh</strong> để bắt đầu chuyến đi.
+    <br>Vui lòng <strong>theo dõi trạng thái Tour</strong> thường xuyên tại đây để đảm bảo đúng lịch trình.
+    <br><br>
+    <i class="fas fa-info-circle me-2"></i>
+    <strong>Ghi chú:</strong> Bạn muốn hủy Tour phải trước ngày bắt đầu 5 ngày và liên hệ qua 
+    <strong>Hotline: 0971 297 501</strong> để được hỗ trợ.
+  </div>
+
+  {% if orders %}
+    {% for order in orders %}
+      <div class="card mb-4 shadow-sm rounded-4 border border-primary">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-bold text-success">🧾 Mã đơn hàng: #{{ order.id }}</h5>
+            <span class="badge bg-secondary">{{ order.created_at|date:"d/m/Y H:i" }}</span>
+          </div>
+
+          {% for item in order.items.all %}
+            <div class="border-top pt-3 mt-3">
+              <h6 class="fw-bold text-primary">{{ item.tour.name }}</h6>
+              <ul class="list-unstyled small">
+                <li><strong>📌 Mã Tour:</strong> {{ item.tour.code }}</li>
+                <li><strong>📅 Khởi hành:</strong> {{ item.tour.start_date|date:"d/m/Y" }}</li>
+                <li><strong>🕒 Thời gian:</strong> {{ item.tour.duration_days }} ngày</li>
+                <li><strong>👥 Số người:</strong> {{ item.quantity }}</li>
+                <li><strong>💵 Tổng giá:</strong> {{ item.total_price|vnd_format }} VNĐ</li>
+                <li><strong>📍 Trạng thái Tour:</strong> 
+                  {% with status=item.tour|tour_status %}
+                    {% if "Sắp" in status %}
+                      <span class="text-warning fw-semibold">{{ status }}</span>
+                    {% elif "diễn ra" in status %}
+                      <span class="text-primary fw-semibold">{{ status }}</span>
+                    {% else %}
+                      <span class="text-success fw-semibold">{{ status }}</span>
+                    {% endif %}
+                  {% endwith %}
+                </li>
+              </ul>
+            </div>
+          {% endfor %}
+
+          <!-- 💳 Hình thức thanh toán -->
+          <div class="mt-3">
+            <strong>💳 Hình thức thanh toán:</strong>
+            {% if order.payment_percent == 20 %}
+              <span class="text-warning fw-semibold">Trả trước 20%</span>
+            {% elif order.payment_percent == 100 %}
+              <span class="text-success fw-semibold">Thanh toán toàn bộ (100%)</span>
+            {% else %}
+              <span class="text-danger">Không xác định</span>
+            {% endif %}
+          </div>
+
+          <!-- 🏁 Trạng thái đơn -->
+          <p class="mt-2 mb-0"><strong>📌 Trạng thái đơn:</strong>
+            {% if order.status == 'paid' %}
+              <span class="badge bg-warning text-dark">Đã thanh toán</span>
+            {% elif order.status == 'completed' %}
+              <span class="badge bg-success">Đã hoàn thành</span>
+            {% else %}
+              <span class="badge bg-secondary text-white">{{ order.status }}</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    {% endfor %}
+
+    <!-- 🔁 Mua Tour khác -->
+    <div class="text-center mt-5">
+      <a href="{% url 'buytour' %}" class="btn btn-outline-primary px-4 py-2 rounded-pill">
+        <i class="fas fa-plus-circle me-2"></i> Mua Tour khác
+      </a>
+    </div>
+
+  {% else %}
+    <div class="alert alert-info mt-4">
+      Bạn chưa đặt tour nào. <a href="{% url 'buytour' %}">Xem các tour tại đây</a>.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

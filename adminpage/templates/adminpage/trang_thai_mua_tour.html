@@ -1,0 +1,107 @@
+{% extends "adminpage/base.html" %}
+{% load static %}
+{% block test_sontent %}
+
+<div class="container mt-4">
+  <div class="mb-3 text-start">
+    <a href="{% url 'hometour' %}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+  </div>
+
+  <h2 class="text-primary mb-3">📋 Trạng thái các Tour đã được đặt</h2>
+  <p class="text-muted">Theo dõi tiến độ và trạng thái của các tour khách đã đặt.</p>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th># Mã đơn</th>
+            <th>Mã Tour</th>
+            <th>Tên Tour</th>
+            <th>Ngày bắt đầu</th>
+            <th>Trạng thái</th>
+            <th>Lý do hủy (nếu có)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for don in danh_sach_don %}
+          <tr>
+            <td>#{{ don.ma_don }}</td>
+            <td>{{ don.ma_tour }}</td>
+            <td><strong>{{ don.ten_tour }}</strong></td>
+            <td>{{ don.ngay_bat_dau|date:"d/m/Y" }}</td>
+            <td>
+              {% if don.trang_thai == "Sắp bắt đầu" %}
+                <span class="badge bg-primary">{{ don.trang_thai }}</span>
+                <button class="btn btn-sm btn-outline-danger mt-1" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#huyTourModal"
+                        data-id="{{ don.ma_don }}"
+                        data-ma="{{ don.ma_tour }}">
+                  <i class="bi bi-x-circle"></i> Hủy
+                </button>
+              {% elif don.trang_thai == "Đang diễn ra" %}
+                <span class="badge bg-success">{{ don.trang_thai }}</span>
+              {% elif don.trang_thai == "Đã kết thúc" %}
+                <span class="badge bg-secondary">{{ don.trang_thai }}</span>
+              {% elif don.trang_thai == "Đã hủy" %}
+                <span class="badge bg-danger">{{ don.trang_thai }}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if don.ly_do_huy %}
+                <span class="text-danger fst-italic">{{ don.ly_do_huy }}</span>
+              {% else %}
+                <span class="text-muted">-</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center text-muted">Chưa có tour nào được đặt.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal nhập lý do hủy -->
+<div class="modal fade" id="huyTourModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url 'huy_tour' %}">
+      {% csrf_token %}
+      <input type="hidden" name="order_id" id="modalOrderId">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">🛑 Hủy Tour</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Nhập lý do hủy Tour mã <strong id="maTourSpan"></strong>:</p>
+          <textarea name="ly_do_huy" class="form-control" rows="3" required></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Script đổ dữ liệu vào modal -->
+<script>
+  const huyTourModal = document.getElementById('huyTourModal');
+  huyTourModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const orderId = button.getAttribute('data-id');
+    const maTour = button.getAttribute('data-ma');
+    document.getElementById('modalOrderId').value = orderId;
+    document.getElementById('maTourSpan').innerText = maTour;
+  });
+</script>
+
+{% endblock %}

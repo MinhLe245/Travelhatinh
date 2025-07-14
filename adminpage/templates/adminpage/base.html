@@ -1,0 +1,67 @@
+{% load static %}   
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Quản trị Du lịch Hà Tĩnh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="navbar navbar-dark bg-dark px-3">
+    <div class="d-flex align-items-center">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo rounded-circle">
+
+        <span class="navbar-brand mb-0 h1">ADMIN - QUẢN TRỊ DU LỊCH HÀ TĨNH</span>
+    </div>
+    <div>
+        {% if user.is_authenticated %}
+            <span class="text-light me-3">Chào, {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Đăng xuất</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">Đăng nhập</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- BODY -->
+<div class="main-content">
+    <!-- SIDEBAR -->
+<div class="sidebar">
+    <a href="{% url 'admin_dashboard'%}" class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">🏠 Trang tổng quan</a>
+    <a href="{% url 'hometour' %}" class="{% if request.resolver_match.url_name == 'hometour' %}active{% endif %}">🧭 Quản lý Tour</a>
+    <a href="{% url 'ql_place' %}" class="{% if request.resolver_match.url_name == 'ql_place' %}active{% endif %}">📍 Quản lý Địa danh</a>
+    <a href="{% url 'ql_food' %}" class="{% if request.resolver_match.url_name == 'ql_food' %}active{% endif %}">🍽️ Quản lý Ẩm thực</a>
+    <a href="{% url 'ql_culture' %}" class="{% if request.resolver_match.url_name == 'ql_culture' %}active{% endif %}">🎭 Quản lý Văn hóa</a>
+    <a href="{% url 'ql_contact'%}" class="{% if request.resolver_match.url_name == 'ql_contact' %}active{% endif %}">📞 Quản lý Liên hệ</a>
+    <a href="{% url 'ql_contact'%}" class="{% if request.resolver_match.url_name == 'ql_review' %}active{% endif %}">🌟 Quản lý Đánh giá</a>
+    <a href="{% url 'manage-users' %}" class="{% if request.resolver_match.url_name == 'ql_permission' %}active{% endif %}">⚙️ Cấp quyền người dùng</a>
+</div>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="content-right">
+
+        {% block test_sontent %}{% endblock test_sontent%}
+        <!--Tour home-->
+        {% block hometour_sontent %}{% endblock hometour_sontent%}
+
+        {% block qltour_content %}{% endblock qltour_content%}
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    &copy; 2025 Du lịch Hà Tĩnh. All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

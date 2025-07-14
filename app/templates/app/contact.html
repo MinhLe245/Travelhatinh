@@ -1,0 +1,93 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block contact_content %}
+<div class="container py-4">
+  <h2 class="text-primary mb-4">💬 Trung tâm hỗ trợ khách hàng</h2>
+<!-- Thông báo -->
+<div class="alert alert-info d-flex align-items-start shadow-sm rounded-4 mb-4">
+  <i class="fas fa-info-circle fa-lg me-3 mt-1 text-primary"></i>
+  <div>
+    <strong>Lưu ý:</strong> Bộ phận hỗ trợ sẽ phản hồi bạn sớm nhất có thể. <br>
+    Nếu cần liên hệ gấp, gọi: <strong class="text-danger">📞 0971 297 501</strong>
+  </div>
+</div>
+
+  <!-- Khung chat -->
+  <div class="bg-light p-4 rounded shadow" style="max-height: 500px; overflow-y: auto;">
+    <div class="mb-4">
+      <div class="d-flex align-items-start">
+        <div class="me-2">
+          <img src="{% static 'app/images/user.jpg' %}" alt="user" class="rounded-circle" width="40">
+        </div>
+        <div>
+          <div class="bg-white p-3 rounded-4 shadow-sm mb-1">
+            <strong>Bạn:</strong><br>
+            {{ form.instance.message|linebreaks }}
+            {% if form.instance.image %}
+              <div class="mt-2">
+                <img src="{{ form.instance.image.url }}" alt="Ảnh minh họa" style="max-width: 200px;">
+              </div>
+            {% endif %}
+          </div>
+          <small class="text-muted">{{ form.instance.created_at|date:"d/m/Y H:i" }}</small>
+        </div>
+      </div>
+    </div>
+
+    {% if form.instance.reply %}
+    <div class="mb-4 text-end">
+      <div class="d-flex justify-content-end align-items-start">
+        <div>
+          <div class="bg-primary text-white p-3 rounded-4 shadow-sm mb-1">
+            <strong>Admin:</strong><br>
+            {{ form.instance.reply|linebreaks }}
+          </div>
+          <small class="text-muted">{{ form.instance.reply_at|date:"d/m/Y H:i" }}</small>
+        </div>
+        <div class="ms-2">
+          <img src="{% static 'app/images/admin.jpg' %}" alt="admin" class="rounded-circle" width="40">
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <hr class="my-4">
+
+  <!-- Form gửi liên hệ -->
+  <form method="POST" enctype="multipart/form-data" class="border p-4 rounded shadow-sm bg-white mt-3">
+    {% csrf_token %}
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">👤 Tên của bạn</label>
+        {{ form.name }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">📧 Email</label>
+        {{ form.email }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">📱 Số điện thoại</label>
+        {{ form.phone }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">📝 Tiêu đề</label>
+        {{ form.subject }}
+      </div>
+      <div class="col-12">
+        <label class="form-label">💬 Nội dung liên hệ</label>
+        {{ form.message }}
+      </div>
+      <div class="col-12">
+        <label class="form-label">🖼 Ảnh minh họa (nếu có)</label>
+        {{ form.image }}
+      </div>
+      <div class="col-12 text-end">
+        <button type="submit" class="btn btn-success">📨 Gửi liên hệ</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

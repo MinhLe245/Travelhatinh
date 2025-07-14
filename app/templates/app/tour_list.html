@@ -1,0 +1,64 @@
+{% load custom_filters %}
+<div class="row g-4" id="tour-list">
+  {% for tour in tours %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card shadow border-0 rounded-4 h-100 tour-card position-relative overflow-hidden">
+      <img src="{{ tour.image.url }}" class="card-img-top rounded-top-4" alt="{{ tour.name }}" style="height: 230px; object-fit: cover;">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title fw-bold text-primary">{{ tour.name }}</h5>
+        <p class="text-muted">{{ tour.describe|truncatechars:90 }}</p>
+        <ul class="list-unstyled small text-muted mb-3">
+          <li>📅 Bắt đầu: <strong>{{ tour.start_date }}</strong></li>
+          <li>🕒 Thời lượng: <strong>{{ tour.duration_days }} ngày</strong></li>
+          <li>🏁 Kết thúc: <strong>{{ tour.end_date }}</strong></li>
+          <li>💰 Giá: <strong class="text-danger">{{ tour.price|vnd_format }} VNĐ</strong></li>
+          <li>🔖 Mã tour: <strong>{{ tour.code }}</strong></li>
+        </ul>
+        <div class="d-flex justify-content-between mt-auto" style="font-size: 0.85rem; gap: 4px;">
+          <a href="#" class="btn btn-outline-secondary rounded-pill px-3">Chi tiết</a>
+
+          <!-- ✅ Nút "Thêm" -->
+          <a href="#" class="btn btn-warning rounded-pill px-3 add-to-cart-btn" data-tour-id="{{ tour.id }}">
+            <i class="fas fa-heart me-1"></i> + Thêm
+          </a>
+
+          <a href="{% url 'add_to_cart' tour.id %}?next={% url 'buytour' %}" class="btn btn-success rounded-pill px-3 ">
+            <i class="fas fa-cart-plus me-1"></i> Đặt Tour
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-center text-danger fw-bold">❌ Không tìm thấy Tour nào phù hợp.</p>
+  {% endfor %}
+</div>
+
+<!-- ✅ Phân trang -->
+<div class="d-flex justify-content-center mt-4">
+  {% if page_obj.has_other_pages %}
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a href="#" class="page-link ajax-page" data-page="{{ page_obj.previous_page_number }}">«</a>
+        </li>
+      {% endif %}
+
+      {% for i in page_obj.paginator.page_range %}
+        {% if page_obj.number == i %}
+          <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+        {% else %}
+          <li class="page-item">
+            <a href="#" class="page-link ajax-page" data-page="{{ i }}">{{ i }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a href="#" class="page-link ajax-page" data-page="{{ page_obj.next_page_number }}">»</a>
+        </li>
+      {% endif %}
+    </ul>
+  {% endif %}
+</div>

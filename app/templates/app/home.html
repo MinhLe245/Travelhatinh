@@ -1,0 +1,52 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block home_content %}
+<section class="hero">
+    <div class="hero-image-overlay"></div>
+    <div class="container">
+        <div class="hero-content">
+            <p class="hero-subtitle">MINH TRAVEL</p>
+            <h1 class="hero-title">Discover The Land Of Talented People In Ha Tinh</h1>
+            <p class="hero-description">Enjoy exclusive offers and best prices for satisfying travel packages.</p>
+         <div class="search-box">
+  <!-- Tabs lựa chọn -->
+<div class="search-tabs mb-3 d-flex justify-content-center flex-wrap gap-2">
+  <a href="{% url 'tour'%}" class="tab btn btn-light">
+    <i class="fas fa-hotel"></i> <span class="tab-text">Tour</span>
+  </a>
+  <a href="{%url 'place'%}" class="tab btn btn-light">
+    <i class="fas fa-plane"></i> <span class="tab-text">Địa danh</span>
+  </a>
+  <a href="{%url 'food'%}" class="tab btn btn-light">
+    <i class="fas fa-car"></i> <span class="tab-text">Ẩm thực</span>
+  </a>
+  <a href="{%url 'culture'%}" class="tab btn btn-light">
+    <i class="fas fa-hiking"></i> <span class="tab-text">Văn hóa</span>
+  </a>
+</div>
+
+</div>
+
+
+        </div>
+    </div>
+</section>
+
+<section class="logos-section">
+    <div class="container">
+        <p class="logos-text">Come and explore the beauty of this place with us</p>
+        <div class="logos">
+            <img src="{% static 'app/images/vcb.jpg'%}" alt="VietCommbank">
+            <img src="{% static 'app/images/vnelines.jpg'%}" alt="VietNamElines">
+            <img src="{% static 'app/images/viettel.jpg'%}" alt="VietCommbank">
+            <img src="{% static 'app/images/vinperl.jpg'%}" alt="VietCommbank">
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+{% endblock home_content %}

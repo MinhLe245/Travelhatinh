@@ -1,0 +1,65 @@
+{% extends "adminpage/base.html" %}
+{% load static %}
+
+{% block hometour_sontent %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">🧭 Quản lý Tour</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <!-- Tất cả Tour -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📋 Tất cả Tour</h5>
+                    <p class="card-text">Quản lý danh sách tour bao gồm: thêm tour mới, sửa hoặc xoá tour đã có.</p>
+                    <a href="{%url 'qlall_tour'%}" class="btn btn-outline-primary">Quản lý</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đơn đã thanh toán -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">💵 Đơn đã thanh toán</h5>
+                    <p class="card-text">Xem tất cả các đơn đặt tour đã được thanh toán (20% hoặc toàn bộ).</p>
+                    <a href="{%url 'don_thanh_toan'%}" class="btn btn-outline-success">Xem đơn</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trạng thái Tour -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📅 Trạng thái Tour</h5>
+                    <p class="card-text">Xem tour đang diễn ra, sắp bắt đầu hoặc đã kết thúc/Hủy tour.</p>
+                    <a href="{%url 'trang_thai_mua_tour'%}" class="btn btn-outline-warning">Xem trạng thái</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tour bị huỷ -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">❌ Tour bị hủy</h5>
+                    <p class="card-text">Quản lý các tour bị huỷ giữa chừng bởi người quản lý hoặc khách hàng.</p>
+                    <a href="#" class="btn btn-outline-danger">Xem tour huỷ</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quản lý ngân sách -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">💰 Quản lý ngân sách</h5>
+                    <p class="card-text">Xem tổng ngân sách thu được từ các tour khách đã đặt thành công.</p>
+                    <a href="{%url 'tong_ngan_sach'%}" class="btn btn-outline-dark">Xem ngân sách</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock hometour_sontent %}

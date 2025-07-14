@@ -1,0 +1,142 @@
+{% extends 'adminpage/base.html' %}
+{% load static %}
+
+{% block test_sontent %}
+<div class="container py-4">
+  <h2 class="mb-4 text-primary">👥 Quản lý người dùng</h2>
+
+  <!-- Danh sách Admin -->
+  <div class="card mb-4 shadow">
+    <div class="card-header bg-primary text-white">🔐 Admin</div>
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead><tr><th>ID</th><th>Tài khoản</th><th>Email</th><th>Staff</th></tr></thead>
+        <tbody id="admin-table">
+          <tr><td colspan="4" class="text-center text-muted">⏳ Đang tải...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Danh sách nhóm -->
+  <div class="card mb-4 shadow">
+    <div class="card-header bg-info text-white">👨‍👩‍👧‍👦 Nhóm</div>
+    <div class="card-body">
+      <ul class="list-group" id="group-list">
+        <li class="list-group-item text-muted">⏳ Đang tải...</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Danh sách người dùng thường -->
+  <div class="card shadow">
+    <div class="card-header bg-secondary text-white">👤 Người dùng thường</div>
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr><th>ID</th><th>Tài khoản</th><th>Email</th><th>Staff</th><th>Group</th><th>Thao tác</th></tr>
+        </thead>
+        <tbody id="normal-table">
+          <tr><td colspan="6" class="text-center text-muted">⏳ Đang tải...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+async function fetchData() {
+  const res = await fetch("{% url 'api-users' %}", {
+    credentials: 'same-origin'
+  });
+
+  if (!res.ok) {
+    alert("❌ Không thể tải dữ liệu. Hãy đảm bảo bạn đang đăng nhập với tài khoản có quyền quản trị (staff).");
+    return;
+  }
+
+  const { normal_users, admin_users, all_groups } = await res.json();
+
+  // Hiển thị nhóm
+  const groupList = document.getElementById("group-list");
+  groupList.innerHTML = all_groups.length
+    ? all_groups.map(g => `<li class="list-group-item">${g.name}</li>`).join('')
+    : '<li class="list-group-item text-muted">Chưa có nhóm nào.</li>';
+
+  // Hiển thị người dùng
+  renderTable('admin-table', admin_users);
+  renderTable('normal-table', normal_users, all_groups);
+}
+
+function renderTable(tableId, users, groups = null) {
+  const tbody = document.getElementById(tableId);
+  tbody.innerHTML = '';
+
+  if (!users.length) {
+    tbody.innerHTML = `<tr><td colspan="${groups ? 6 : 4}" class="text-center text-muted">Không có dữ liệu</td></tr>`;
+    return;
+  }
+
+  users.forEach(u => {
+    const isStaff = u.is_staff ? '✅' : '❌';
+    const groupOptions = groups
+      ? `<select id="grp-${u.id}" class="form-select form-select-sm"><option value="">--Chọn--</option></select>`
+      : '—';
+
+    const actions = groups ? `
+      <button class="btn btn-sm btn-warning me-1" onclick="act(${u.id}, 'toggle_staff')">${u.is_staff ? 'Thu hồi staff' : 'Cấp staff'}</button>
+      <button class="btn btn-sm btn-danger" onclick="act(${u.id}, 'delete')">Xoá</button>
+    ` : '';
+
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td>${u.id}</td>
+        <td>${u.username}</td>
+        <td>${u.email}</td>
+        <td>${isStaff}</td>
+        <td>${groupOptions}</td>
+        <td>${actions}</td>
+      </tr>
+    `);
+
+    if (groups) setupGroupSelect(u, groups);
+  });
+}
+
+function setupGroupSelect(user, groups) {
+  const sel = document.getElementById(`grp-${user.id}`);
+  groups.forEach(g => {
+    const opt = new Option(g.name, g.name);
+    if (user.group_names && user.group_names.includes(g.name)) opt.selected = true;
+    sel.add(opt);
+  });
+
+  sel.onchange = () => {
+    const selected = sel.value;
+    const action = selected ? 'add_group' : 'remove_group';
+    act(user.id, action, selected);
+  };
+}
+
+async function act(userId, action, group = null) {
+  const res = await fetch("{% url 'api-users-action' %}", {
+    method: "POST",
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify({ id: userId, action, group })
+  });
+
+  if (res.ok) {
+    fetchData();
+  } else {
+    const data = await res.json();
+    alert(`❌ Lỗi: ${data.error || 'Không thể thực hiện thao tác'}`);
+  }
+}
+
+fetchData();
+</script>
+{% endblock %}

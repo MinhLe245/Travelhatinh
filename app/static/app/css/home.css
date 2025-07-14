@@ -1,0 +1,244 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f0f0; /* A light grey background to match the overall page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    max-width: 1200px; /* Adjust as needed */
+    width: 100%;
+    overflow: hidden;
+}
+
+.left-section {
+    flex: 1;
+    position: relative;
+    padding: 30px; /* Padding inside the white container for the images */
+    display: flex;
+    align-items: center; /* Vertically align items */
+    justify-content: center; /* Horizontally align items */
+}
+
+.main-image-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 350px; /* Adjust based on image aspect ratio in the original */
+    height: 500px; /* Fixed height to match the example's proportions */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Subtle shadow for the main image */
+}
+
+.main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.overlay-image-card {
+    position: absolute;
+    bottom: 20px; /* Adjust as needed */
+    right: -50px; /* Adjust to overlap, can be negative */
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 280px; /* Adjust width */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    z-index: 10; /* Ensure it's above the main image */
+}
+
+.overlay-image {
+    width: 100%;
+    height: 180px; /* Fixed height for the overlay image */
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.overlay-text h3 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.overlay-text p {
+    margin: 5px 0 0;
+    font-size: 0.85em;
+    color: #666;
+    line-height: 1.4;
+}
+
+.arrow-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+.right-section {
+    flex: 1.5; /* Give more space to the right section */
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.title {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.description {
+    font-size: 1em;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.stats-and-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    gap: 30px;
+}
+
+.stat-item {
+    background-color: #fff; /* Assuming a white background for the stat part */
+    padding: 10px; /* Minimal padding for the percentage */
+    border-radius: 8px; /* If it had a distinct card, but here it's more integrated */
+}
+
+.percentage {
+    font-size: 3em;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.label {
+    font-size: 0.9em;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.feature-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    position: relative;
+    overflow: hidden; /* To ensure arrow is within bounds if positioned absolutely */
+}
+
+.feature-image {
+    width: 100%;
+    height: 120px; /* Fixed height for consistency */
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.feature-label {
+    font-size: 1em;
+    font-weight: 600;
+    color: #333;
+    margin-top: 5px; /* Space between image and text */
+}
+
+/* Adjustments for the arrow icon within feature cards */
+.feature-card .arrow-icon {
+    top: 10px; /* Adjust position */
+    right: 10px; /* Adjust position */
+    background-color: rgba(255, 255, 255, 0.8); /* Slightly more opaque */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 1em; /* Smaller arrow */
+    width: 25px;
+    height: 25px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .container {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .left-section, .right-section {
+        padding: 20px;
+    }
+
+    .main-image-wrapper {
+        height: 400px;
+    }
+
+    .overlay-image-card {
+        right: 50%;
+        transform: translateX(50%);
+        bottom: -30px; /* Pull it slightly below when stacking */
+        width: 80%; /* Make it wider on smaller screens */
+    }
+
+    .stats-and-features {
+        grid-template-columns: 1fr; /* Stack columns */
+    }
+}
+
+@media (max-width: 768px) {
+    .left-section {
+        padding-bottom: 80px; /* Add space for the overlay card */
+    }
+    .overlay-image-card {
+        bottom: -60px; /* Ensure it doesn't overlap content above */
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 1.8em;
+    }
+
+    .percentage {
+        font-size: 2.5em;
+    }
+
+    .overlay-image-card {
+        width: 90%;
+        left: 5%;
+        right: auto;
+        transform: none;
+    }
+}
