@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-b^zqm^3%%(vnogmta#5u&)8h(7t-7tli&o+8v@d3c+6kx0*y(g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True # Cân nhắc đặt False khi triển khai lên production để bảo mật hơn
 
-ALLOWED_HOSTS = ['gohatinh.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['hatinhgotravel.onrender.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -124,10 +124,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
 
 # THÊM DÒNG NÀY ĐỂ XÁC ĐỊNH THƯ MỤC CHỨA STATIC FILES KHI DEPLOY
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
