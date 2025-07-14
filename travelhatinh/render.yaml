@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: travelhatinh
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn travelhatinh.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: travelhatinh.settings
+      - key: PYTHON_VERSION
+        value: 3.10
