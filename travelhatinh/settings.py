@@ -129,9 +129,6 @@ STATIC_URL = 'static/'
 # THÊM DÒNG NÀY ĐỂ XÁC ĐỊNH THƯ MỤC CHỨA STATIC FILES KHI DEPLOY
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'), # Trỏ đến travelhatinh/static/
-]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -169,7 +166,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = False     # Đặt True nếu chạy HTTPS - Nên đặt True trên Render
 # settings.py
 # ... (cuối file) ...
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
