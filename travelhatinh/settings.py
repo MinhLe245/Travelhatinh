@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os # Đảm bảo đã import os ở đầu file
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-b^zqm^3%%(vnogmta#5u&)8h(7t-7tli&o+8v@d3c+6kx0*y(g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True # Cân nhắc đặt False khi triển khai lên production để bảo mật hơn
 
-ALLOWED_HOSTS = ['gotohatinh.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['gohatinh.onrender.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -41,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'adminpage',
     'widget_tweaks',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -59,7 +61,7 @@ ROOT_URLCONF = 'travelhatinh.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # ✅ Chỉ cần dòng này thôi
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Ho_Chi_Minh' # Đã đặt đúng timezone cho Việt Nam
 
 USE_I18N = True
 
@@ -127,28 +129,35 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
+# THÊM DÒNG NÀY ĐỂ XÁC ĐỊNH THƯ MỤC CHỨA STATIC FILES KHI DEPLOY
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# Đầu file:
-import os
 
-# Media files
+# Media files (Ảnh người dùng upload)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # 👉 Sau khi đăng nhập, redirect về trang phân quyền
-LOGIN_REDIRECT_URL = '/redirect/'   # <-- thêm view redirect logic theo quyền
-LOGOUT_REDIRECT_URL = '/home/'     # Trang logout chuyển về login
-LOGIN_URL = '/admin/login/'         # Dùng trang login mặc định của Django admin
-LOGIN_URL = '/login/'  # hoặc đường dẫn login bạn đặt
+LOGIN_REDIRECT_URL = '/redirect/'
+LOGOUT_REDIRECT_URL = '/home/'
+
+# CHỈ ĐẶT MỘT DÒNG CHO LOGIN_URL
+# Tùy thuộc vào việc bạn dùng trang login admin hay trang login tự tạo
+# Nếu dùng trang admin mặc định:
+# LOGIN_URL = '/admin/login/'
+# Hoặc nếu dùng trang login tự tạo:
+LOGIN_URL = '/login/'
 
 
 # Timezone
-USE_TZ = True
-TIME_ZONE = 'Asia/Ho_Chi_Minh'
+# USE_TZ và TIME_ZONE đã được định nghĩa ở trên, không cần lặp lại
+# USE_TZ = True
+# TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 # Cấu hình gửi email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -156,10 +165,10 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'travelhatinh2025@gmail.com'
-EMAIL_HOST_PASSWORD = 'nexo jdfc fmwh qsgu'  
+EMAIL_HOST_PASSWORD = 'nexo jdfc fmwh qsgu'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 SESSION_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_SECURE = False  # Đặt True nếu chạy HTTPS
+SESSION_COOKIE_SECURE = False  # Đặt True nếu chạy HTTPS - Nên đặt True trên Render vì Render dùng HTTPS
 CSRF_COOKIE_SAMESITE = "Lax"
-CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False     # Đặt True nếu chạy HTTPS - Nên đặt True trên Render
