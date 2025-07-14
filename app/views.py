@@ -87,7 +87,8 @@ def culture(request):
     cultures = Culture.objects.all()
     return render(request, 'app/culture.html', {'cultures': cultures})
 def tour(request):
-    tours = Tour.objects.all()
+    tours = Tour.objects.all().order_by('id')
+    paginator = Paginator(tours, 6)  # 6 tour mỗi trang
 
     # Lấy các giá trị từ form tìm kiếm
     duration = request.GET.get('duration')
@@ -103,7 +104,7 @@ def tour(request):
         tours = tours.filter(start_date__year=int(year))
 
     # Phân trang
-    paginator = Paginator(tours, 6)  # 6 tour mỗi trang
+    
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
