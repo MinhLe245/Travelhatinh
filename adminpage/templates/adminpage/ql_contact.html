@@ -12,7 +12,7 @@
       <div class="list-group shadow-sm">
         {% for contact in contacts %}
           <button class="list-group-item list-group-item-action d-flex align-items-center btn-load-contact" data-id="{{ contact.id }}">
-            <img src="{% static 'app/images/user.jpg' %}" class="rounded-circle me-3" width="40" height="40">
+            <img src="{% static 'images/user.jpg' %}" class="rounded-circle me-3" width="40" height="40">
             <div>
               <div class="fw-bold">{{ contact.name }}</div>
               <small class="text-muted">{{ contact.subject|truncatechars:25 }}</small>
